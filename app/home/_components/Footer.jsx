@@ -53,8 +53,10 @@ function Footer() {
         </div>
 
         <p className="mx-auto mt-6 max-w-md text-center leading-relaxed text-gray-500 lg:text-left">
-        Nous nous consacrons au développement du langage, de la parole et de la communication pour les enfants et les adultes. 
-                    Chez Marwa, nous comprenons à quel point la communication est cruciale pour une vie épanouissante.
+        
+        Le cabinet prend en charge une grande variété de troubles, qu'ils soient d'origine développementale, 
+          neurologique, génétique, sensorielle, traumatique ou neuro-dégénérative, en offrant une approche 
+          personnalisée pour chaque patient.  
         </p>
       </div>
 

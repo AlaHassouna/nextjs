@@ -64,6 +64,8 @@ const CalendarV = () => {
         var startTime = selected.startStr.split('T')[1].split('+')[0];
         var endTime = selected.endStr.split('T')[1].split('+')[0];
         var date = selected.endStr.split('T')[0];
+        console.log("date :",date)
+
         eventToAdd = {
           data: {
             title: title,
@@ -74,12 +76,13 @@ const CalendarV = () => {
           }
         };
       } else {
+       
         eventToAdd = {
           data: {
             title: title,
-            start_time: "",
-            end_time: "",
-            Date: selected.endStr,
+            start_time: "00:00:01",
+            end_time: "23:59:59",
+            Date: selected.startStr,
             all_day: true
           }
         };
@@ -113,7 +116,7 @@ const CalendarV = () => {
     if (window.confirm(`Êtes-vous sûr de vouloir supprimer l'événement ? '${selected.event.title}'`)) {
       // console.log("id delete : ",selected.event._def.publicId)
       const publicId = selected.event._def.publicId;
-
+      // console.log("publicId :",publicId)
       // Appeler la méthode de suppression avec l'identifiant
       GlobalApi.deleteBlockedTime(publicId)
         .then(response => {

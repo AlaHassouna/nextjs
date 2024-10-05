@@ -13,7 +13,9 @@ function DoctorDetail({doctor}) {
   useEffect(()=>{
       // console.log("test")
       // console.log(user)
+      console.log(doctor.attributes)
   },[user])
+
   return (
     <div>
           <div className='grid grid-cols-1 md:grid-cols-3 border-[1px] p-5 mt-5 rounded-lg'>
@@ -57,7 +59,15 @@ function DoctorDetail({doctor}) {
           </div>
           <div className='p-3 order-[1px] rounded-lg'>
             <h2 className='font-bold text-[20px]'>À propos de moi</h2>
-            <p className='text-gray-500  tracking-wide  mt-2'>{doctor.attributes?.About[0].children[0].text}</p>
+            {doctor.attributes?.About.map((section, index) => (
+              <p key={index} className='text-gray-500 tracking-wide mt-2'>
+                {section.children.map((child, childIndex) => (
+                  <span key={childIndex}>
+                    {child.bold ? <strong>{child.text}</strong> : child.text}
+                  </span>
+                ))}
+              </p>
+            ))}
             
           
         </div>

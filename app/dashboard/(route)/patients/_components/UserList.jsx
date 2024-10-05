@@ -3,6 +3,8 @@ import GlobalApi from '@/app/home/_utils/GlobalApi';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import Search from './Search';
+import AddPatient from './AddPatient';
+import { Toaster } from 'sonner';
 
 function UserList() {
     const [users, setUsers] = useState([]);
@@ -34,13 +36,16 @@ function UserList() {
 
     return (
         <>
+        <Toaster />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                 <div className="rounded-lg h-15 md:h-15">
                     <Search onSearch={handleSearch} />
                 </div>
                 <div className="rounded-lg h-15 md:h-15"></div>
                 <div className="rounded-lg h-15 md:h-15 flex justify-start"></div>
-                <div className="rounded-lg h-15 md:h-15 flex justify-end"></div>
+                <div className="rounded-lg h-15 md:h-15 flex justify-end">
+                    <AddPatient/>
+                </div>
             </div>
             <div className="rounded-lg h-96 mb-4">
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -66,6 +71,7 @@ function UserList() {
                                 <td className="px-6 py-4">{item.attributes.Phone}</td>
                                 <td className="px-6 py-4">
                                     <Link href={'/dashboard/details/' + item.attributes.id_patient} className="font-medium m-2 text-[#3a6fb6] hover:underline">Modifier</Link>
+                                    <Link href={'/dashboard/historique/' + item.attributes.id_patient} className="font-medium m-2 text-[#3a6fb6] hover:underline">Historique</Link>
                                 </td>
                             </tr>
                         ))}

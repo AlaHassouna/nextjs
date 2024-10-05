@@ -18,7 +18,7 @@ function NextPatient() {
             <thead className="text-xs text-gray-900 uppercase dark:text-gray-400">
               <tr>
                 <th scope="col" className="px-2 py-1">Date de Naissance</th>
-                <th scope="col" className="px-2 py-1">Sex</th>
+                <th scope="col" className="px-2 py-1">Sexe</th>
                 <th scope="col" className="px-2 py-1">Dernier Visite</th>
               </tr>
             </thead>

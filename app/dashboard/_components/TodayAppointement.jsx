@@ -46,6 +46,9 @@ function TodayAppointement({ bookings}) {
                 <td className="px-6 py-4">
                       <button className="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-3">Consulter</button>
                       <button onClick={() => handleAnnulation(booking.id)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Annuler</button>
+                      {/* <Link href={'/dashboard/details/' + item.attributes.id_patient} className="font-medium m-2 text-[#3a6fb6] hover:underline">Modifier</Link> */}
+                      <button onClick={() => handleAnnulation(booking.id)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Annuler</button>
+
                                
                 </td>
               </tr>

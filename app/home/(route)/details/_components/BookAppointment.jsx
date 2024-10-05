@@ -47,24 +47,26 @@ function BookAppointment({ doctor }) {
   }, []);
 
   const isBlockedTime = (time) => {
-    // console.log("time :",time)
+    // Convertir le temps en objets Date pour la comparaison
+    const [timeHour, timeMinute] = time.split(':').map(Number);
+    const timeStart = new Date(date.setHours(timeHour, timeMinute, 0, 0));
+    const timeEnd = new Date(timeStart.getTime() + 45 * 60000); // Ajouter 45 minutes au temps de début
+  
+    // Vérifier si la date est bloquée toute la journée
+    if (blockedEvents.some(event => event.all_day && new Date(event.Date).toDateString() === date.toDateString())) {
+      return true; // Toute la journée est bloquée
+    }
+  
+    // Vérifier les événements normaux
     return blockedEvents.some(event => {
-      // console.log("event :",event)
       const eventDate = new Date(event.Date);
       const [eventStartHour, eventStartMinute] = event.start_time.split(':').map(Number);
       const eventStartTime = new Date(eventDate.setHours(eventStartHour, eventStartMinute, 0, 0));
       const eventEndTime = new Date(eventStartTime.getTime() + 30 * 60000); // Ajouter 30 minutes au temps de début
   
-      const [timeHour, timeMinute] = time.split(':').map(Number);
-      const timeStart = new Date(date.setHours(timeHour, timeMinute, 0, 0));
-      const timeEnd = new Date(timeStart.getTime() + 45 * 60000); // Ajouter 45 minutes au temps de début
-      // console.log("eventStartTime :",eventStartTime)
-      // console.log("eventEndTime :",eventEndTime)
-      // console.log("timeStart :",timeStart)
-      // console.log("timeEnd :",timeEnd)
-      // console.log("date.toDateString() :",date.toDateString())
       return date.toDateString() === eventDate.toDateString() &&
-        ((timeStart >= eventStartTime && timeStart < eventEndTime) || (timeEnd > eventStartTime && timeEnd <= eventEndTime) ||
+        ((timeStart >= eventStartTime && timeStart < eventEndTime) || 
+         (timeEnd > eventStartTime && timeEnd <= eventEndTime) ||
          (timeStart <= eventStartTime && timeEnd >= eventEndTime)); // Vérifier chevauchement
     });
   };
@@ -151,16 +153,25 @@ function BookAppointment({ doctor }) {
       setError('Les champs Nom, Prénom et Numéro de téléphone sont obligatoires.');
       return;
     }
-  
+
     // Convertir la date au format YYYY-MM-DD
     const formattedDate = date.toISOString().split('T')[0]; // Extrait YYYY-MM-DD
-  
+
+    // Formater l'heure sélectionnée
+    const formatTimeSlot = (timeSlot) => {
+      const [hours, minutes] = timeSlot.split(':');
+      const formattedHours = hours.padStart(2, '0'); // Ajoute un zéro si l'heure est entre 1 et 9
+      return `${formattedHours}:${minutes}`;
+    };
+
+    const formattedTimeSlot = formatTimeSlot(selectedTimeSlot);
+
     const data = {
       data: {
         UserName: user.given_name + " " + user.family_name,
         Email: user.email,
         Date: formattedDate, // Utilisez la date formatée
-        Time: selectedTimeSlot,
+        Time: formattedTimeSlot, // Utilisez l'heure formatée
         Note: note,
         Nom: nom,
         Prenom: prenom,
@@ -169,16 +180,16 @@ function BookAppointment({ doctor }) {
         id_patient: user.id
       }
     };
-  
+
     GlobalApi.bookAppointment(data).then(resp => {
       if (resp) {
         GlobalApi.sendEmail(data).then(resp => {
           // console.log("resp", resp);
         });
-        toast("Nous vous appellerons pour confirmation. Si non, merci de nous contacter à ce numéro 25202020.", { duration: 8000 });
+        toast("Nous vous appellerons pour confirmation. Si non, merci de nous contacter à ce numéro 92989862.", { duration: 8000 });
       }
     });
-  };
+};
 
   const isPastDay = (day) => {
     const today = new Date();

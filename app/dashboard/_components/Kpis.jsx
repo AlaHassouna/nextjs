@@ -72,7 +72,7 @@ function Kpis() {
             });
 
             setSortedTodayBookings(sortedTodayBookings); // Mise à jour de l'état sortedTodayBookings
-            console.log("sortedTodayBookings",sortedTodayBookings)
+            // console.log("sortedTodayBookings",sortedTodayBookings)
             const now = new Date();
             const upcomingBookings = sortedTodayBookings.filter(item => {
                 const [itemHour, itemMinute] = item.attributes.Time.split(':').map(Number);
@@ -133,42 +133,94 @@ function Kpis() {
 
     const handleAnnulation = async (id) => {
         try {
+            // console.log('Liste des rendez-vous:', bookings);
+            // console.log('ID à rechercher:', id);
+
+            const bookingToCancel = bookings.find(booking => booking.id === id);
+
+            if (bookingToCancel) {
+                // console.log('Détails du rendez-vous à annuler:', bookingToCancel);
+                GlobalApi.getBlockedTime(bookingToCancel.attributes.Date,bookingToCancel.attributes.Time).then(response => {
+                    const id =response.data.data[0].id
+                    // console.log("response.data.id :",response.data.data[0].id);
+
+                    // console.log("response.data.id :",response.data.id);
+                    // console.log("id :",id);
+                    GlobalApi.deleteBlockedTime(id).then(response => {
+                        // console.log("BlockedTime supprimer avec succée");
+                        // console.log("Fiche added successfully:", response);
+                      }).catch(error => {
+                        // toast.error("Erreur lors de l'ajout de la fiche");
+                        console.error("Error deleteBlockedTime:", error);
+                      });
+                    // console.log("Fiche added successfully:", response);
+                  }).catch(error => {
+                    // toast.error("Erreur lors de l'ajout de la fiche");
+                    console.error("Error getBlockedTime:", error);
+                  });
+            } else {
+                console.warn('Rendez-vous non trouvé');
+            }
+                
             // Envoyer la requête de suppression au backend
             await GlobalApi.deleteBooking(id);
-            
-            // Mettre à jour bookings en supprimant l'appointment avec l'ID correspondant
-            var updatedBookings = bookingList.filter(booking => booking.id !== id);
-            setBookingList(updatedBookings);
-             
-            updatedBookings = pastBookings.filter(booking => booking.id !== id);
-            setPastBookings(updatedBookings);
-
-            updatedBookings = pastBookings.filter(booking => booking.id !== id);
-            setPastBookings(updatedBookings);
-
-            updatedBookings = todayBookings.filter(booking => booking.id !== id);
-            setTodayBookings(updatedBookings);
-
-
-            updatedBookings = sortedTodayBookings.filter(booking => booking.id !== id);
-            setSortedTodayBookings(updatedBookings);
-
-            updatedBookings = nextBooking.filter(booking => booking.id !== id);
-            setNextBooking(updatedBookings);
-
-            updatedBookings = appointmentsPerDay.filter(booking => booking.id !== id);
-            setAppointmentsPerDay(updatedBookings);
-
-            updatedBookings = filteredAppointments.filter(booking => booking.id !== id);
-            setFilteredAppointments(updatedBookings);
-
-            
-            console.log('Rendez-vous annulé avec succès');
+    
+            // Mettre à jour les états en supprimant le rendez-vous avec l'ID correspondant
+            const updatedBookings = bookings.filter(booking => booking.id !== id);
+            setBookings(updatedBookings);
+    
+            const updatedTodayBookings = todayBookings.filter(booking => booking.id !== id);
+            setTodayBookings(updatedTodayBookings);
+    
+            const updatedPastBookings = pastBookings.filter(booking => booking.id !== id);
+            setPastBookings(updatedPastBookings);
+    
+            const updatedSortedTodayBookings = updatedTodayBookings.sort((a, b) => {
+                const [hourA, minuteA] = a.attributes.Time.split(':').map(Number);
+                const [hourB, minuteB] = b.attributes.Time.split(':').map(Number);
+                return hourA === hourB ? minuteA - minuteB : hourA - hourB;
+            });
+            setSortedTodayBookings(updatedSortedTodayBookings);
+    
+            const now = new Date();
+            const upcomingBookings = updatedSortedTodayBookings.filter(item => {
+                const [itemHour, itemMinute] = item.attributes.Time.split(':').map(Number);
+                return itemHour > now.getHours() || (itemHour === now.getHours() && itemMinute > now.getMinutes());
+            });
+            const nextBooking = upcomingBookings.length > 0 ? upcomingBookings[0] : null;
+            setNextBooking(nextBooking);
+    
+            // Mettre à jour appointmentsPerDay et filteredAppointments
+            const countByDay = updatedBookings.reduce((acc, booking) => {
+                const bookingDate = new Date(booking.attributes.Date);
+                const dayOfWeek = bookingDate.toLocaleDateString('fr-FR', { weekday: 'long' });
+                if (!acc[dayOfWeek]) {
+                    acc[dayOfWeek] = 0;
+                }
+                acc[dayOfWeek]++;
+                return acc;
+            }, {});
+            setAppointmentsPerDay(countByDay);
+    
+            const filtered = updatedBookings.filter(appointment => {
+                const appointmentDate = new Date(appointment.attributes.Date);
+                const [hours, minutes] = appointment.attributes.Time.split(':').map(Number);
+                const appointmentTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
+    
+                return (
+                    !appointment.attributes.Confirmer &&
+                    (appointmentDate > now || (appointmentDate.getTime() === now.getTime() && appointmentTime > now))
+                );
+            });
+            setFilteredAppointments(filtered);
+    
+            // console.log('Rendez-vous annulé avec succès');
         } catch (error) {
             // Gérer l'erreur si la suppression échoue
             console.error("Échec de l'annulation du rendez-vous :", error);
         }
     };
+    
 
     return (
         <>
@@ -236,8 +288,10 @@ function Kpis() {
                                 <td className="px-6 py-4">
                                     <Link href={'/dashboard/details/'+booking.attributes.id_patient}>
                                     <button className="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-3">Consulter</button></Link>
-                                    <button onClick={() => handleAnnulation(booking.id)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Annuler</button>
-                                            
+                                    <Link  href={'/dashboard/fiche/' + booking.id}>
+                                    <button className="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-3">Fiche</button></Link>
+                                    <button onClick={() => handleAnnulation(booking.id)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline  mr-3">Annuler</button>
+                                           
                                 </td>
                             </tr>
                             ))}

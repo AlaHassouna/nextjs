@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import Image from 'next/image';
 import GlobalApi from '@/app/home/_utils/GlobalApi';
+import { toast, Toaster } from 'sonner';
 
 function Profil({ user }) {
   // const { user } = useKindeBrowserClient();
@@ -134,7 +135,7 @@ function Profil({ user }) {
   
     const handleSubmit = (e) => {
       e.preventDefault();
-      console.log('Form data:', formData);
+      // console.log('Form data:', formData);
       const updatedObject = {
         "data":{
         ...formData,
@@ -142,9 +143,19 @@ function Profil({ user }) {
         Langues_parlees: formData.Langues_parlees.join(', ')
         }
       };
-      console.log('updatedObject:', updatedObject);
+      // console.log('updatedObject:', updatedObject);
 
-      GlobalApi.updatePatient(user.id,updatedObject)
+      GlobalApi.updatePatient(user.id, updatedObject)
+      .then(response => {
+        toast.success("Modification enregistrée avec succès.");
+
+        // console.log("Patient updated successfully:", response);
+        // Ajoutez ici tout autre traitement après la mise à jour du patient.
+      })
+      .catch(error => {
+        console.error("Error updating patient:", error);
+        // Gérez les erreurs ici.
+      });
       // Envoyer formData au backend ou effectuer d'autres actions
     };
     const handleCheckboxChange = (e) => {
@@ -172,6 +183,8 @@ function Profil({ user }) {
     return (
     
     <div className="max-w-2xl px-4 py-8 mx-auto lg:py-16 mt-6">
+
+<Toaster />
      <form onSubmit={handleSubmit}>
     <fieldset>
     <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">Informations générales</h2>

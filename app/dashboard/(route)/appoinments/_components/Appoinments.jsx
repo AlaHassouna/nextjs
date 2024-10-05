@@ -6,7 +6,11 @@ import Link from 'next/link';
 function Appointments() {
     const [bookingList, setBookingList] = useState([]);
     const [filteredAppointments, setFilteredAppointments] = useState([]);
-    
+    const [selectedAppointment, setSelectedAppointment] = useState(null);
+    const [newDate, setNewDate] = useState('');
+    const [newTime, setNewTime] = useState('');
+    const [showPopup, setShowPopup] = useState(false);
+
     useEffect(() => {
         GlobalApi.getBookingList().then(resp => {
             const bookings = resp.data.data;
@@ -38,84 +42,73 @@ function Appointments() {
         
     }, [bookingList]);
 
-    const handleConfirmation = async (id) => {
-        // Trouver le rendez-vous par ID
-        const appointmentToConfirm = bookingList.find(appointment => appointment.id === id);
-        console.log('appointmentToConfirm', appointmentToConfirm);
-        
-        // Mettre à jour l'objet de rendez-vous
+    const handleEdit = (appointment) => {
+        console.log(appointment)
+        setSelectedAppointment(appointment);
+        setNewDate(appointment.attributes.Date);
+        setNewTime(appointment.attributes.Time);
+        setShowPopup(true);
+    };
+    const handleConfirmation = async () => {
+        if (!selectedAppointment) return;
+
         const updatedAppointment = {
             data: {
-                Confirmer: true // Définir Confirmer à true
+                Date: newDate,
+                Time: newTime,
+                Confirmer: true,
             },
         };
-    
+
         try {
-            // Envoyer la requête de mise à jour au backend avec await
-            const resp = await GlobalApi.updateBooking(id, updatedAppointment);
-    
-            // Mettre à jour bookingList pour refléter la confirmation
+            const resp = await GlobalApi.updateBooking(selectedAppointment.id, updatedAppointment);
+
             const updatedList = bookingList.map(appointment => {
-                if (appointment.id === id) {
+                if (appointment.id === selectedAppointment.id) {
                     return {
                         ...appointment,
                         attributes: {
                             ...appointment.attributes,
-                            Confirmer: true
-                        }
+                            Date: newDate,
+                            Time: newTime,
+                            Confirmer: true,
+                        },
                     };
                 }
                 return appointment;
             });
-    
-            // Mettre à jour l'état local bookingList
+
             setBookingList(updatedList);
-    
-            // Rafraîchir la liste des rendez-vous filtrés si nécessaire
-            const filtered = updatedList.filter(appointment => !appointment.attributes.Confirmer);
-            setFilteredAppointments(filtered);
-            console.log("début :");
-    
-            // Extraire la date et l'heure de début en utilisant `appointmentToConfirm`
-            const appointmentDate = new Date(`${appointmentToConfirm.attributes.Date}T${appointmentToConfirm.attributes.Time}`);
-            console.log("appointmentDate : ", appointmentDate);
-    
-            // Extraire et formater le `startTime`
-            const [hours, minutes] = appointmentToConfirm.attributes.Time.split(':').map(part => part.padStart(2, '0'));
-            const startTime = `${hours}:${minutes}:00`; // Format : HH:MM:SS
-            console.log("startTime : ", startTime);
-            console.log("appointmentDate.getTime() : ", appointmentDate.getTime());
-            
-            // Calculer l'heure de fin en ajoutant 45 minutes
+            setFilteredAppointments(updatedList.filter(appointment => !appointment.attributes.Confirmer));
+
+            const appointmentDate = new Date(`${newDate}T${newTime}`);
             const endTimeDate = new Date(appointmentDate.getTime() + 45 * 60000);
             const endHours = endTimeDate.getHours().toString().padStart(2, '0');
             const endMinutes = endTimeDate.getMinutes().toString().padStart(2, '0');
-            const endTime = `${endHours}:${endMinutes}:00`; // Format : HH:MM:SS
-            console.log("endTime : ", endTime);
-    
-            // Créer l'objet eventToAdd
+            const endTime = `${endHours}:${endMinutes}:00`;
+
             const eventToAdd = {
                 data: {
-                    title: `Rendez-vous ${appointmentToConfirm.attributes.Date} ${startTime}`,
-                    start_time: startTime,
+                    title: `Rendez-vous ${newDate} ${newTime}`,
+                    start_time: `${newTime}:00`,
                     end_time: endTime,
-                    Date: appointmentToConfirm.attributes.Date,
-                    all_day: false
-                }
+                    Date: newDate,
+                    all_day: false,
+                },
             };
-    
-            console.log(eventToAdd);
-            GlobalApi.addBlockedTime(eventToAdd)
-            .then(
-            )
-            .catch(error => {
-            console.error("Error adding blocked time:", error);
+
+            GlobalApi.addBlockedTime(eventToAdd).catch(error => {
+                console.error("Error adding blocked time:", error);
             });
-            // Gérer le succès si nécessaire
+
+            setShowPopup(false);
         } catch (error) {
-            // Gérer l'erreur si la mise à jour échoue
-            console.error('Échec de la confirmation du rendez-vous :', error);
+            console.error('Échec de la mise à jour du rendez-vous :', error);
         }
+    };
+    const handleClosePopup = () => {
+        setShowPopup(false);
+        setSelectedAppointment(null);
     };
     const handleAnnulation = async (id) => {
         try {
@@ -131,7 +124,7 @@ function Appointments() {
             setFilteredAppointments(filtered);
     
             // Gérer le succès si nécessaire
-            console.log('Rendez-vous annulé avec succès');
+            // console.log('Rendez-vous annulé avec succès');
         } catch (error) {
             // Gérer l'erreur si la suppression échoue
             console.error("Échec de l'annulation du rendez-vous :", error);
@@ -172,8 +165,9 @@ function Appointments() {
                                     {appointment.attributes.Note}
                                 </td>
                                 <td className="px-6 py-4 text-right">
+                                    <button onClick={() => handleEdit(appointment)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-3">Modifier</button>
                                     <button onClick={() => handleConfirmation(appointment.id)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-3">Confirmer</button>
-                                    <button onClick={() => handleAnnulation(appointment.id)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Annuler</button>
+                                    <button onClick={() => handleAnnulation(appointment.id)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-3">Annuler</button>
                                 </td>
                             </tr>
                         ))}
@@ -226,7 +220,44 @@ function Appointments() {
             </div>
 
              </div>
+             {showPopup && (
+                    <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
+                        <div className="bg-white p-5 rounded shadow-lg">
+                            <h2 className="text-xl font-bold mb-4">Modifier Rendez-vous</h2>
+                            <label className="block mb-2">Nouvelle Date:</label>
+                            <input
+                                type="date"
+                                value={newDate}
+                                onChange={(e) => setNewDate(e.target.value)}
+                                className="border p-2 rounded w-full mb-4"
+                            />
+                            <label className="block mb-2">Nouvelle Heure:</label>
+                            <input
+                                type="time"
+                                value={newTime}
+                                onChange={(e) => setNewTime(e.target.value)}
+                                className="border p-2 rounded w-full mb-4"
+                            />
+                            <div className="flex justify-end">
+                                <button
+                                    onClick={handleClosePopup}
+                                    className="px-4 py-2 bg-gray-500 text-white rounded mr-2"
+                                >
+                                    Annuler
+                                </button>
+                                <button
+                                    onClick={handleConfirmation}
+                                    className="px-4 py-2 bg-blue-600 text-white rounded"
+                                >
+                                    Confirmer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
         </div>
+
     );
 }
 

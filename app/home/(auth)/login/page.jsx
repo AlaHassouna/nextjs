@@ -64,7 +64,7 @@ function Login() {
        
 
         try {
-          const resp = await GlobalApi.getPatient(user.id);
+          const resp = await GlobalApi.getPatientEmail(user.email);
           const patient = resp.data.data;
           setPatientList(patient);
         } catch (error) {
@@ -79,7 +79,10 @@ function Login() {
   useEffect(() => {
     
     const registerPatient = async () => {
-      if (user && patientList.length === 0) {
+      if (user){ 
+       if(patientList.length === 0) {
+        
+
         // console.log('patientList',patientList)
         const nouvelObjet = {
           data: {
@@ -95,12 +98,25 @@ function Login() {
           await GlobalApi.Register(nouvelObjet);
           
         } catch (error) {
-          console.error('Error registering patient:', error);
+          // console.error('Error registering patient:', error);
         }
+      }else{
+        
+        const id =patientList[0].attributes.id_patient;
+        if (id.startsWith("Marwa")) {
+          const updatedPatient = {
+            data: {
+                id_patient: user.id // Définir Confirmer à true
+            },
+        };
+          GlobalApi.updateIdPatient(patientList[0].id,updatedPatient)
+        } 
+
       }
+    }
       router.push('/home');
     };
-
+    
     registerPatient();
     // console.log('Patient list updated:', patientList);
   }, [patientList, user, router]);
