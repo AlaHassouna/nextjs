@@ -1,11 +1,3 @@
-
-
-
-import React from 'react'
-// import TodayAppointement from './_components/TodayAppointement'
-// import CalendarG from './_components/CalendarG'
-// import NextPatient from './_components/NextPatient'
-// import Barchart from './_components/Barchart'
 import Kpis from './_components/Kpis'
 
 
