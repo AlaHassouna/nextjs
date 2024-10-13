@@ -46,11 +46,17 @@ function Hero() {
           <h2 className="text-3xl font-bold sm:text-4xl">Cabinet <span className='text-primary'>Marwa</span></h2>
   
           <p className="mt-4 text-gray-600 mb-4">
-          Nous sommes spécialisés dans la prise en charge des troubles de la communication, de la parole et des 
-          fonctions associées. Nos orthophonistes évaluent, diagnostiquent et rééduquent les troubles du langage 
-          oral et écrit, de la parole, de la voix, ainsi que les troubles de la déglutition et des fonctions cognitives, 
-          telles que la mémoire, l'attention et les apprentissages. Nous mettons un point d'honneur à offrir des soins 
-          personnalisés et adaptés aux besoins de chaque patient, pour favoriser leur bien-être et leur autonomie.
+          Nous sommes spécialisés dans la prise en charge des troubles de la communication, 
+          de la parole et des fonctions associées. Nos orthophonistes évaluent et rééduquent 
+          les troubles du langage, de la voix, de la déglutition et des fonctions cognitives. 
+          Nous offrons des soins personnalisés pour favoriser le bien-être et l'autonomie de chaque patient.
+
+
+
+
+
+
+
           </p>
           {user?  
           <BookAppointment doctor={doctor}/>
