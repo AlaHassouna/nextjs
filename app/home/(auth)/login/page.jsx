@@ -157,9 +157,10 @@ function Login() {
           <h2 className="text-3xl font-bold sm:text-4xl">Cabinet <span className='text-primary'>Marwa</span></h2>
   
           <p className="mt-4 text-gray-600 mb-4">
-          Nous nous consacrons au développement du langage, de la parole et de la communication pour les enfants et les adultes. 
-                    Chez Marwa, nous comprenons à quel point la communication est cruciale pour une vie épanouissante.
-
+          Nous sommes spécialisés dans la prise en charge des troubles de la communication, 
+          de la parole et des fonctions associées. Nos orthophonistes évaluent et rééduquent 
+          les troubles du langage, de la voix, de la déglutition et des fonctions cognitives. 
+          Nous offrons des soins personnalisés pour favoriser le bien-être et l'autonomie de chaque patient.
           </p>
           
             <a 
