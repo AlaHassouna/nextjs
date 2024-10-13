@@ -44,7 +44,7 @@ function Header() {
       <div className="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto p-4">
         <a href="/home" className="flex items-center space-x-3 rtl:space-x-reverse">
           <img src="/logo.png" alt="Logo" className="h-8" />
-          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Flowbite</span>
+          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Cabinet Marwa</span>
         </a>
         <div className="flex items-center md:order-2 space-x-1 md:space-x-2 rtl:space-x-reverse">
           {user ? (
