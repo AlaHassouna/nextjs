@@ -114,7 +114,7 @@ function Login() {
 
       }
     }
-      router.push('/home');
+      // router.push('/home');
     };
     
     registerPatient();
