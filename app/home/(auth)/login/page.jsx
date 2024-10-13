@@ -77,48 +77,52 @@ function Login() {
   }, [user]);
 
   useEffect(() => {
-    
     const registerPatient = async () => {
-      if (user){ 
-       if(patientList.length === 0) {
-        
-
-        // console.log('patientList',patientList)
-        const nouvelObjet = {
-          data: {
-          family_name: user.family_name,
-          given_name: user.given_name,
-          picture: user.picture,
-          email: user.email,
-          id_patient: user.id,
-          }
-        };
-
-        try {
-          await GlobalApi.Register(nouvelObjet);
-          
-        } catch (error) {
-          // console.error('Error registering patient:', error);
-        }
-      }else{
-        
-        const id =patientList[0].attributes.id_patient;
-        if (id.startsWith("Marwa")) {
-          const updatedPatient = {
+      if (user) {
+        if (patientList.length === 0) {
+          // Création d'un nouvel objet pour l'inscription
+          const nouvelObjet = {
             data: {
-                id_patient: user.id // Définir Confirmer à true
+              family_name: user.family_name,
+              given_name: user.given_name,
+              picture: user.picture,
+              email: user.email,
+              id_patient: user.id,
             },
-        };
-          GlobalApi.updateIdPatient(patientList[0].id,updatedPatient)
-        } 
-
+          };
+  
+          try {
+            // Attendre l'inscription du patient
+            await GlobalApi.Register(nouvelObjet);
+          } catch (error) {
+            console.error('Error registering patient:', error);
+          }
+        } else {
+          // Si la liste des patients n'est pas vide
+          const id = patientList[0].attributes.id_patient;
+          if (id.startsWith("Marwa")) {
+            // Mettre à jour l'ID du patient
+            const updatedPatient = {
+              data: {
+                id_patient: user.id,
+              },
+            };
+  
+            try {
+              await GlobalApi.updateIdPatient(patientList[0].id, updatedPatient);
+            } catch (error) {
+              console.error('Error updating patient:', error);
+            }
+          }
+        }
+  
+        // Une fois toutes les opérations terminées, rediriger vers /home
+        router.push('/home');
       }
-    }
-      // router.push('/home');
     };
-    
+  
+    // Appel de la fonction d'inscription ou mise à jour du patient
     registerPatient();
-    // console.log('Patient list updated:', patientList);
   }, [patientList, user, router]);
 
   const [doctor,setDoctor]=useState();
