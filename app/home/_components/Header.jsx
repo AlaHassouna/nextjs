@@ -5,6 +5,12 @@ import Link from 'next/link';
 import React, { useEffect, useState, useRef } from 'react';
 import { LoginLink, LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+  } from "@/components/ui/popover" 
+
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -39,6 +45,10 @@ function Header() {
     setMenuOpen(false);
   };
 
+  useEffect(()=>{
+    // console.log("test")
+    // console.log(user)
+},[user])
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900">
       <div className="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto p-4">
