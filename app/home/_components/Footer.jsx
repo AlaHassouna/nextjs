@@ -27,12 +27,19 @@ function Footer() {
       &copy; 2024 <a href="https://www.linkedin.com/in/ala-hassouna/" className="hover:underline" target="_blank">Ala Hassouna</a>. All rights reserved.
   </p>
   <div className="flex justify-center items-center space-x-1">
-    <a href="https://sghartoon.com/"  target="_blank" className="inline-flex justify-center p-2 text-gray-500 rounded-lg cursor-pointer dark:text-gray-400 dark:hover:text-white hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600">
+  <a href="https://www.linkedin.com/in/marwa-ezzine-0266983a/"  target="_blank" className="inline-flex justify-center p-2 text-gray-500 rounded-lg cursor-pointer dark:text-gray-400 dark:hover:text-white hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600">
        
-        <img src="/sghartoon.png" className="w-12 h-12"/>
+       <img src="/linkedin.png" className="w-8 h-8"/>
 
-        <span className="sr-only">Sghartoon</span>
-    </a>
+       <span className="sr-only">Sghartoon</span>
+   </a>
+  <a href="https://sghartoon.com/"  target="_blank" className="inline-flex justify-center p-2 text-gray-500 rounded-lg cursor-pointer dark:text-gray-400 dark:hover:text-white hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600">
+       
+       <img src="/sghartoon.png" className="w-12 h-12"/>
+
+       <span className="sr-only">Sghartoon</span>
+   </a>
+    
     
 </div>
 </footer>
