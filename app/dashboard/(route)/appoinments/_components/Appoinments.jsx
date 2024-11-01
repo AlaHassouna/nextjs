@@ -145,7 +145,7 @@ function Appointments() {
                             <th scope="col" className="px-6 py-3">Commentaire</th>
                             <th scope="col" className="px-6 py-3 text-right">
                                 <span className="sr-only">Voir</span>
-                                
+                                <span className="sr-only">Annuler</span>
                             </th>
                         </tr>
                     </thead>
@@ -165,8 +165,8 @@ function Appointments() {
                                     {appointment.attributes.Note}
                                 </td>
                                 <td className="px-6 py-4 text-right">
-                                    <button onClick={() => handleEdit(appointment)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-3">Modifier</button>
-                                    <button onClick={() => handleConfirmation(appointment.id)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-3">Confirmer</button>
+                                    <button onClick={() => handleEdit(appointment)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-3">Voir</button>
+                                    {/* <button onClick={() => handleConfirmation(appointment.id)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-3">Voir</button> */}
                                     <button onClick={() => handleAnnulation(appointment.id)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-3">Annuler</button>
                                 </td>
                             </tr>

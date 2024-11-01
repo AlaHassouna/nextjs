@@ -27,7 +27,7 @@ const getPatients=()=>axiosClient.get("/patients")
 const updatePatient = (id, data) => axiosClient.put('/patients/' + id+'/?populate=*', data);
 const updateIdPatient = (id, data) => axiosClient.put('/patients/' + id+'?populate=id_patient', data);
 const addBlockedTime = (data) => axiosClient.post('/blocked-times', data);
-const getBlockedTime = (date,time) => axiosClient.get('/blocked-times?filters[title][$eq]=Rendez-vous%20'+date+'%20'+time+':00');
+const getBlockedTime = (date,time) => axiosClient.get('/blocked-times?filters[title][$eq]=Rendez-vous%20'+date+'%20'+time);
 const getAllBlockedTime = () => axiosClient.get('/blocked-times');
 const deleteBlockedTime = (id) => axiosClient.delete('/blocked-times/'+id);
 const addFiche = (data) => axiosClient.post('/fiches', data);
