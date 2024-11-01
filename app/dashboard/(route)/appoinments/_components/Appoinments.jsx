@@ -144,8 +144,8 @@ function Appointments() {
                             <th scope="col" className="px-6 py-3">Date</th>
                             <th scope="col" className="px-6 py-3">Commentaire</th>
                             <th scope="col" className="px-6 py-3 text-right">
-                                <span className="sr-only">Confirmer</span>
-                                <span className="sr-only">Annuler</span>
+                                <span className="sr-only">Voir</span>
+                                
                             </th>
                         </tr>
                     </thead>
